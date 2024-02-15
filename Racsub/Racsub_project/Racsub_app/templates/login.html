@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Racsub</title>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .link-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px; /* Add spacing between the links and the button */
+    }
+    
+    .separator {
+      margin: 0 10px; /* Adjust the spacing between the links */
+      color: #fff;
+    }
+    
+    .link {
+      text-decoration: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    #menu-bar form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    #menu-bar {
+      width: 250px;
+      background-color: #333;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    #menu-bar form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #menu-bar label {
+      text-align: left;
+      width: 100%;
+      margin-bottom: 5px;
+      margin-right: auto; /* ย้ายข้อความไปทางซ้าย */
+    }
+
+    #menu-bar input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    #menu-bar button {
+      width: 80%;
+      padding: 10px;
+      background-color: #FE53E5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #menu-bar button:hover {
+      background-color: #E857D2;
+    }
+
+    #menu-bar button:active {
+      background-color: #C454B3;
+    }
+
+    svg {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+    }
+
+    #menu-toggle {
+      cursor: pointer;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      color: #fff;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu-bar">
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <h2 style="font-size: 50px;">Racsub</h2>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+      <br>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+      <br>
+      <button type="submit">Login</button>
+      <br>
+      <div class="link-container">
+        <a class="link" type="button" onclick="window.location.href='/reset/'">Forgot password</a>
+        <span class="separator">|</span>
+        <a class="link" type="button" onclick="window.location.href='/register/'">Register</a>
+      </div>
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+              <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+  {% endif %}
+    </form>  
+  </div>
+  
+
+  <svg id="hearts" viewBox="-600 -400 1200 800" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <symbol id="heart" viewBox="-69 -16 138 138">
+        <path d="M0,12
+               C 50,-30 110,50  0,120
+               C-110,50 -50,-30 0,12z"/>
+      </symbol>
+    </defs>
+  </svg>
+  <script>
+    const colors = ["#ff66b2", "#cc33ff", "#9900cc", "#ff99ff", "#cc66ff", "#ffccff"];
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const SVG_XLINK = "http://www.w3.org/1999/xlink";
+  
+    let heartsRy = [];
+  
+    function useTheHeart(n){
+      let use = document.createElementNS(SVG_NS, 'use');
+      use.n = n;
+      use.setAttributeNS(SVG_XLINK, 'xlink:href', '#heart');
+      use.setAttributeNS(null, 'transform', `scale(${use.n})`);
+      use.setAttributeNS(null, 'fill', colors[n % colors.length]);
+      use.setAttributeNS(null, 'x', -69);
+      use.setAttributeNS(null, 'y', -69);
+      use.setAttributeNS(null, 'width', 138);
+      use.setAttributeNS(null, 'height', 138);
+  
+      heartsRy.push(use);
+      hearts.appendChild(use);
+    }
+  
+    for(let n = 18; n >= 0; n--){
+      useTheHeart(n);
+    }
+  
+    function Frame(){
+      window.requestAnimationFrame(Frame);
+      for(let i = 0; i < heartsRy.length; i++){
+        if(heartsRy[i].n < 18){
+          heartsRy[i].n += 0.01;
+        } else {
+          heartsRy[i].n = 0;
+          hearts.appendChild(heartsRy[i]);
+        }
+        heartsRy[i].setAttributeNS(null, 'transform', `scale(${heartsRy[i].n})`);
+      }
+    }
+  
+    Frame();
+  </script>
+  
+</body>
+</html>
